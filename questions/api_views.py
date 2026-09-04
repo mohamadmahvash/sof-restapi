@@ -1,5 +1,19 @@
 from rest_framework.views import APIView
+from rest_framework.response import Response
 
-class AllQuestionsView(APIView):
+from .models import Question
+from .serializers import QuestionsListSerializer, QuestionDetailSerializer
+
+
+class QuestionsListView(APIView):
     def get(self, request):
-        pass
+        questions = Question.objects.all()
+        serialized_data = QuestionsListSerializer(questions, many=True)
+        return Response(serialized_data.data)
+
+
+class QuestionDetailView(APIView):
+    def get(self, request, pk):
+        questions = Question.objects.filter(id=pk).first()
+        serialized_data = QuestionDetailSerializer(questions)
+        return Response(serialized_data.data)

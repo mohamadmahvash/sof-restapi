@@ -1,0 +1,18 @@
+from rest_framework import serializers
+
+from .models import Question
+
+
+class QuestionsListSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    title = serializers.CharField()
+    body = serializers.CharField()
+    views_count = serializers.IntegerField()
+
+
+class QuestionDetailSerializer(serializers.ModelSerializer):
+    author_username = serializers.CharField(source='author.username')
+
+    class Meta:
+        model = Question
+        exclude = ['author']
