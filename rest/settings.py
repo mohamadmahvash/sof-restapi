@@ -38,6 +38,9 @@ INSTALLED_APPS = [
 
     # local apps
     'home.apps.HomeConfig',
+    'accounts.apps.AccountsConfig',
+    'questions.apps.QuestionsConfig',
+    'answers.apps.AnswersConfig',
 
     # third-party apss
     'rest_framework',

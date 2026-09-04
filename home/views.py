@@ -1,6 +1,9 @@
-from django.shortcuts import render
-from django.views import View
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
-class HomeView(View):
+class HomeView(APIView):
     def get(self, request):
-        return render(request , 'home/home.html')
+        return Response({'message':'hello'})
+
+    def put(self, request):
+        return Response({'message':'hello'})
