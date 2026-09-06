@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from .serializers import UserSerializer, UserRegisterSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from .models import User
 
 
@@ -13,3 +14,16 @@ class UserRegisterView(APIView):
         user.set_password(serializer.validated_data['password'])
         user.save()
         return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response(UserSerializer(request.user).data)
+
+    def patch(self, request):
+        username = request.data.get('username')
+        request.user.username = username
+        request.user.save(update_fields=['username'])
+        return Response(UserSerializer(request.user).data)
