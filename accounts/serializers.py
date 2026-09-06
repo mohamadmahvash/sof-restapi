@@ -25,7 +25,7 @@ class UserRegisterSerializer(serializers.Serializer):
         return value
 
     def validate_email(self, value):
-        user = User.objects.get(email=value)
+        user = User.objects.filter(email=value).exists()
         if user:
             raise serializers.ValidationError("Email already registered")
         return  value
