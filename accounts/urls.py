@@ -4,6 +4,10 @@ from . import api_views
 app_name = "accounts"
 
 urlpatterns = [
-    path('register/', api_views.UserRegisterView.as_view(), name='register'),
-    path('profile/', api_views.UserProfileView.as_view(), name='profile'),
+    path('register/', api_views.UserRegisterView.as_view()),
+    path('profile/', api_views.UserProfileView.as_view()),
+    path('change-password/', api_views.UserChangePasswordView.as_view()),
+    path('admin/<int:pk>/', api_views.UserDetailView.as_view()),
+    path('admin/<int:pk>/deactivate/', api_views.UserDeactivateView.as_view()),
+    path('admin/<int:pk>/activate/', api_views.UserActivateView.as_view()),
 ]
