@@ -1,11 +1,13 @@
 from rest_framework.views import APIView
-from .serializers import UserSerializer, UserRegisterSerializer, ChangePasswordSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .models import User
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
+from .serializers import UserSerializer, UserRegisterSerializer, ChangePasswordSerializer
 from .selectors import get_user_by_id
 from .services import *
+from .models import User
 
 
 class UserRegisterView(APIView):
@@ -76,3 +78,18 @@ class UserActivateView(APIView):
             return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         activate_user(user=user)
         return Response({"message": "User activated successfully"}, status=status.HTTP_200_OK)
+
+
+class UserActivationAccountView(APIView):
+    def get(self, request, uidb64, token):
+        try:
+            user_id = urlsafe_base64_decode(uidb64).decode()
+            user = User.objects.get(pk=user_id)
+        except Exception:
+            return Response({"message": "Invalid link"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if default_token_generator.check_token(user, token):
+            activate_user(user=user)
+            return Response({"message": "Account activated successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Invalid link"}, status=status.HTTP_400_BAD_REQUEST)

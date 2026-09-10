@@ -10,4 +10,5 @@ urlpatterns = [
     path('admin/<int:pk>/', api_views.UserDetailView.as_view()),
     path('admin/<int:pk>/deactivate/', api_views.UserDeactivateView.as_view()),
     path('admin/<int:pk>/activate/', api_views.UserActivateView.as_view()),
+    path('activate/<uidb64>/<token>/', api_views.UserActivationAccountView.as_view()),
 ]
