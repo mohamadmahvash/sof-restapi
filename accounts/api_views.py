@@ -4,8 +4,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
-from .serializers import UserSerializer, UserRegisterSerializer, ChangePasswordSerializer
-from .selectors import get_user_by_id
+from .serializers import UserSerializer, UserRegisterSerializer, ChangePasswordSerializer, ForgotPasswordSerializer
+from .selectors import get_user_by_id, get_user_by_email
 from .services import *
 from .models import User
 
@@ -37,7 +37,7 @@ class UserChangePasswordView(APIView):
     def patch(self, request):
         serializer = ChangePasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        change_password(user=request.user, password=serializer.validated_data['password'])
+        change_password(user=request.user, password=serializer.validated_data['new_password'])
         return Response({'message': 'Password changed successfully'})
 
 
@@ -84,12 +84,40 @@ class UserActivationAccountView(APIView):
     def get(self, request, uidb64, token):
         try:
             user_id = urlsafe_base64_decode(uidb64).decode()
-            user = User.objects.get(pk=user_id)
+            user = get_user_by_id(user_id)
         except Exception:
             return Response({"message": "Invalid link"}, status=status.HTTP_400_BAD_REQUEST)
 
         if default_token_generator.check_token(user, token):
             activate_user(user=user)
             return Response({"message": "Account activated successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Invalid link"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ForgotPasswordView(APIView):
+    def post(self, request):
+        serializer = ForgotPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = get_user_by_email(serializer.validated_data['email'])
+        if user:
+            reset_url = build_reset_password_link(user=user)
+            send_reset_password_email(user=user, reset_url=reset_url)
+        return Response({"message": "Reset Link has bees sent"})
+
+
+class ResetPasswordView(APIView):
+    def post(self, request, uidb64, token):
+        serializer = ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            user_id = urlsafe_base64_decode(uidb64).decode()
+            user = get_user_by_id(user_id)
+        except Exception:
+            return Response({"message": "Invalid link"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if default_token_generator.check_token(user, token):
+            change_password(user=user, password=serializer.validated_data['new_password'])
+            return Response({"message": "Password reset successfully"}, status=status.HTTP_200_OK)
         else:
             return Response({"message": "Invalid link"}, status=status.HTTP_400_BAD_REQUEST)

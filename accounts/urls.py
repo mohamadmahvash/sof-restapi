@@ -11,4 +11,6 @@ urlpatterns = [
     path('admin/<int:pk>/deactivate/', api_views.UserDeactivateView.as_view()),
     path('admin/<int:pk>/activate/', api_views.UserActivateView.as_view()),
     path('activate/<uidb64>/<token>/', api_views.UserActivationAccountView.as_view()),
+    path('forgot-password/', api_views.ForgotPasswordView.as_view()),
+    path('reset-password/<uidb64>/<token>/', api_views.ResetPasswordView.as_view()),
 ]
