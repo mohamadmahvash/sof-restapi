@@ -16,3 +16,7 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         exclude = ['author']
+
+class QuestionCreateSerializer(serializers.Serializer):
+    title = serializers.CharField(max_length=255)
+    body = serializers.CharField()
