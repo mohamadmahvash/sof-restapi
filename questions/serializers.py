@@ -12,11 +12,20 @@ class QuestionsListSerializer(serializers.Serializer):
 
 class QuestionDetailSerializer(serializers.ModelSerializer):
     author_username = serializers.CharField(source='author.username')
+    created = serializers.DateTimeField(format="%d/%m/%Y %H:%M:%S")
+    updated = serializers.DateTimeField(format="%d/%m/%Y %H:%M:%S")
 
     class Meta:
         model = Question
         exclude = ['author']
 
+
 class QuestionCreateSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255)
     body = serializers.CharField()
+
+
+class QuestionUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['title', 'body']

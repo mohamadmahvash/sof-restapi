@@ -10,3 +10,7 @@ def create_question(*, author, title, body):
 def increment_views_count(question):
     question.views_count = F('views_count') + 1
     question.save()
+
+
+def delete_question(question):
+    question.delete()

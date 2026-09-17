@@ -7,4 +7,6 @@ urlpatterns = [
     path('', api_views.QuestionsListView.as_view()),
     path('<uuid:pk>/', api_views.QuestionDetailView.as_view()),
     path('create/', api_views.QuestionCreateView.as_view()),
+    path('delete/<uuid:pk>/', api_views.QuestionDeleteView.as_view()),
+    path('update/<uuid:pk>/', api_views.QuestionUpdateView.as_view()),
 ]

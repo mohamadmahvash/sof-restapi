@@ -1,11 +1,18 @@
 from rest_framework import serializers
 from .models import User
+from questions.serializers import QuestionsListSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
+    questions = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'is_active', 'is_staff', 'date_joined']
+        fields = ['id', 'email', 'username', 'is_active', 'is_staff', 'date_joined', 'questions']
+
+    def get_questions(self, obj):
+        qs = obj.questions.all()
+        return QuestionsListSerializer(instance=qs, many=True).data
 
 
 def clean_email(value):
@@ -40,6 +47,7 @@ class UserRegisterSerializer(serializers.Serializer):
 
 class ChangePasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField()
+
 
 class ForgotPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
