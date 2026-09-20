@@ -6,7 +6,8 @@ from rest_framework import status
 from .serializers import QuestionsListSerializer, QuestionDetailSerializer, QuestionCreateSerializer, \
     QuestionUpdateSerializer
 from .selectors import get_question_by_id, get_all_questions
-from .services import create_question, increment_views_count, delete_question
+from answers.selectors import get_answer_by_id
+from .services import create_question, increment_views_count, delete_question, accept_answer, denied_answer
 from core.permissions import IsOwner
 
 
@@ -58,3 +59,25 @@ class QuestionUpdateView(APIView):
         serializer.save()
         serialized_data = QuestionDetailSerializer(instance=qs)
         return Response(serialized_data.data, status=status.HTTP_200_OK)
+
+
+class AcceptAnswerView(APIView):
+    permission_classes = [IsOwner]
+
+    def post(self, request, question_id, answer_id):
+        question = get_question_by_id(question_id)
+        self.check_object_permissions(request, question)
+        answer = get_answer_by_id(answer_id=answer_id)
+        accept_answer(question=question, answer=answer)
+        return Response({'message': 'Answer Accepted'}, status=status.HTTP_200_OK)
+
+
+class DenyAnswerView(APIView):
+    permission_classes = [IsOwner]
+
+    def post(self, request, question_id, answer_id):
+        question = get_question_by_id(question_id)
+        self.check_object_permissions(request, question)
+        answer = get_answer_by_id(answer_id=answer_id)
+        denied_answer(question=question, answer=answer)
+        return Response({'message': 'Answer Denied'}, status=status.HTTP_200_OK)

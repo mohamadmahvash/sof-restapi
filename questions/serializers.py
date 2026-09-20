@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Question
+from answers.serializers import AnswersListSerializer
 
 
 class QuestionsListSerializer(serializers.Serializer):
@@ -12,6 +13,7 @@ class QuestionsListSerializer(serializers.Serializer):
 
 class QuestionDetailSerializer(serializers.ModelSerializer):
     author_username = serializers.CharField(source='author.username')
+    best_answer = AnswersListSerializer(read_only=True)
 
     class Meta:
         model = Question
