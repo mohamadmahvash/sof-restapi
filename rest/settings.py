@@ -133,11 +133,11 @@ STATIC_URL = 'static/'
 
 # REST_FRAMEWORK
 REST_FRAMEWORK = {
+    "DATETIME_FORMAT": "%d/%m/%Y %H:%M:%S",
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
-
 
 # GOOGLE APP PASSWORD
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

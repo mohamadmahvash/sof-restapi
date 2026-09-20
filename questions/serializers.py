@@ -12,8 +12,6 @@ class QuestionsListSerializer(serializers.Serializer):
 
 class QuestionDetailSerializer(serializers.ModelSerializer):
     author_username = serializers.CharField(source='author.username')
-    created = serializers.DateTimeField(format="%d/%m/%Y %H:%M:%S")
-    updated = serializers.DateTimeField(format="%d/%m/%Y %H:%M:%S")
 
     class Meta:
         model = Question
