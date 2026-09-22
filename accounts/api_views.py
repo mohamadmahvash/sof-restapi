@@ -5,10 +5,13 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.utils.http import urlsafe_base64_decode
 from .serializers import UserSerializer, UserRegisterSerializer, ChangePasswordSerializer, ForgotPasswordSerializer
 from .selectors import get_user_by_id, get_user_by_email
+from .throttlers import ForgotPasswordThrottle , RegisterThrottle
 from .services import *
 
 
 class UserRegisterView(APIView):
+    throttle_classes = [RegisterThrottle]
+
     def post(self, request):
         serializer = UserRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -94,6 +97,8 @@ class UserActivationAccountView(APIView):
 
 
 class ForgotPasswordView(APIView):
+    throttle_classes = [ForgotPasswordThrottle]
+
     def post(self, request):
         serializer = ForgotPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
