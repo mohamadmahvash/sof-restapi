@@ -3,9 +3,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.utils.http import urlsafe_base64_decode
-from .serializers import UserSerializer, UserRegisterSerializer, ChangePasswordSerializer, ForgotPasswordSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+from .serializers import UserSerializer, UserRegisterSerializer, ChangePasswordSerializer, ForgotPasswordSerializer, \
+    UserLoginSerializer
 from .selectors import get_user_by_id, get_user_by_email
-from .throttlers import ForgotPasswordThrottle , RegisterThrottle
+from .throttlers import ForgotPasswordThrottle, RegisterThrottle
 from .services import *
 
 
@@ -124,3 +127,7 @@ class ResetPasswordView(APIView):
             return Response({"message": "Password reset successfully"}, status=status.HTTP_200_OK)
         else:
             return Response({"message": "Invalid link"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserLoginView(TokenObtainPairView):
+    serializer_class = UserLoginSerializer
