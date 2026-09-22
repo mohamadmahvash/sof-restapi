@@ -134,25 +134,29 @@ STATIC_URL = 'static/'
 # REST_FRAMEWORK
 REST_FRAMEWORK = {
     "DATETIME_FORMAT": "%d/%m/%Y %H:%M:%S",
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle'
-    ],
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '3/day',
-        'user': '10/day',
+    'DEFAULT_METADATA_CLASS': 'core.metadata.CustomMetaData',
+                              'DEFAULT_AUTHENTICATION_CLASSES': [
+    'rest_framework.authentication.TokenAuthentication',
+],
+'DEFAULT_THROTTLE_CLASSES': [
+    'rest_framework.throttling.AnonRateThrottle',
+    'rest_framework.throttling.UserRateThrottle'
+],
+'DEFAULT_THROTTLE_RATES': {
+    'anon': '3/day',
+    'user': '10/day',
 
-        'login' : '3/min',
-        'register' : '3/hour',
-        'profile' : '10/min',
+    'login': '3/min',
+    'register': '3/hour',
+    'profile': '10/min',
 
-        'forgot_password' : '3/hour',
-        'reset_password' : '5/hour',
+    'forgot_password': '3/hour',
+    'reset_password': '5/hour',
 
-    }
+},
+'DEFAULT_RENDERER_CLASSES': [
+    'rest_framework.renderers.JSONRenderer',
+]
 }
 
 # GOOGLE APP PASSWORD
