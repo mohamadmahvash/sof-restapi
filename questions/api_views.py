@@ -2,6 +2,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.generics import ListAPIView
 
 from .serializers import QuestionsListSerializer, QuestionDetailSerializer, QuestionCreateSerializer, \
     QuestionUpdateSerializer
@@ -9,13 +10,19 @@ from .selectors import get_question_by_id, get_all_questions
 from answers.selectors import get_answer_by_id
 from .services import create_question, increment_views_count, delete_question, accept_answer, denied_answer
 from core.permissions import IsOwner
+from core.pagination import CustomPageNumberPagination
 
 
-class QuestionsListView(APIView):
-    def get(self, request):
-        qs = get_all_questions()
-        serialized_data = QuestionsListSerializer(instance=qs, many=True)
-        return Response(serialized_data.data, status=status.HTTP_200_OK)
+# class QuestionsListView(APIView):
+#     def get(self, request):
+#         qs = get_all_questions()
+#         serialized_data = QuestionsListSerializer(instance=qs, many=True)
+#         return Response(serialized_data.data, status=status.HTTP_200_OK)
+
+class QuestionsListView(ListAPIView):
+    serializer_class = QuestionsListSerializer
+    queryset = get_all_questions()
+    pagination_class = CustomPageNumberPagination
 
 
 class QuestionDetailView(APIView):

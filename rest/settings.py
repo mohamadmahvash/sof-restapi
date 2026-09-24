@@ -25,7 +25,6 @@ load_dotenv()
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -165,8 +164,8 @@ REST_FRAMEWORK = {
 
 # JWT
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(weeks=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(weeks=3),
 }
 
 # GOOGLE APP PASSWORD
