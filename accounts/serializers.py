@@ -5,7 +5,6 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
-
 class UserSerializer(serializers.ModelSerializer):
     questions = serializers.SerializerMethodField()
 
@@ -65,3 +64,7 @@ class UserLoginSerializer(TokenObtainPairSerializer):
         token['email'] = user.email
 
         return token
+
+
+class UserLogOutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()

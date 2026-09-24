@@ -5,6 +5,9 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework.exceptions import ValidationError
 
 
 def create_user(*, username, email, password):
@@ -60,3 +63,11 @@ def send_reset_password_email(*, user, reset_url):
                                    from_email=settings.EMAIL_HOST_USER, to=[user.email])
     email.attach_alternative(html_content, "text/html")
     email.send()
+
+
+def logout_user(*, refresh_token):
+    try:
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+    except TokenError:
+        raise ValidationError("Invalid or expired refresh token")

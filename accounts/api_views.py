@@ -6,7 +6,7 @@ from django.utils.http import urlsafe_base64_decode
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import UserSerializer, UserRegisterSerializer, ChangePasswordSerializer, ForgotPasswordSerializer, \
-    UserLoginSerializer
+    UserLoginSerializer, UserLogOutSerializer
 from .selectors import get_user_by_id, get_user_by_email
 from .throttlers import ForgotPasswordThrottle, RegisterThrottle
 from .services import *
@@ -131,3 +131,13 @@ class ResetPasswordView(APIView):
 
 class UserLoginView(TokenObtainPairView):
     serializer_class = UserLoginSerializer
+
+
+class UserLogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = UserLogOutSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        logout_user(refresh_token=serializer.validated_data["refresh"])
+        return Response({"message": "Successfully logged out."}, status=status.HTTP_205_RESET_CONTENT)
