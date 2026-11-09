@@ -16,6 +16,12 @@ class UserSerializer(serializers.ModelSerializer):
         return QuestionsListSerializer(instance=qs, many=True).data
 
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username']
+
+
 def clean_email(value):
     if "admin" in value:
         raise serializers.ValidationError("Email should not contain `admin`")

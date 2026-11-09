@@ -5,8 +5,8 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.utils.http import urlsafe_base64_decode
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import UserSerializer, UserRegisterSerializer, ChangePasswordSerializer, ForgotPasswordSerializer, \
-    UserLoginSerializer, UserLogOutSerializer
+from .serializers import UserSerializer, UserProfileSerializer, UserRegisterSerializer, ChangePasswordSerializer, \
+    ForgotPasswordSerializer, UserLoginSerializer, UserLogOutSerializer
 from .selectors import get_user_by_id, get_user_by_email
 from .throttlers import ForgotPasswordThrottle, RegisterThrottle
 from .services import *
@@ -30,8 +30,9 @@ class UserProfileView(APIView):
         return Response(UserSerializer(request.user).data)
 
     def patch(self, request):
-        username = request.data.get('username')
-        user = update_profile(user=request.user, username=username)
+        serializer = UserProfileSerializer(instance=request.user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = update_profile(user=request.user, username=serializer.validated_data['username'])
         return Response(UserSerializer(user).data)
 
 
