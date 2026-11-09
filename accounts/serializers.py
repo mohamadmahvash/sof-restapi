@@ -2,7 +2,6 @@ from rest_framework import serializers
 from .models import User
 from questions.serializers import QuestionsListSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 class UserSerializer(serializers.ModelSerializer):

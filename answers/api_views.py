@@ -5,7 +5,7 @@ from rest_framework import status
 
 from core.permissions import IsOwner
 from questions.selectors import get_question_by_id
-from .selectors import get_answer_by_id
+from .selectors import get_answer_by_id , get_answers_for_question
 from .serializers import AnswersListSerializer, AnswerCreateSerializer, AnswerUpdateSerializer
 from .services import create_answer, delete_answer
 
@@ -15,7 +15,7 @@ class AnswersListView(APIView):
 
     def get(self, request, question_id):
         question = get_question_by_id(q_id=question_id)
-        answers = question.answers
+        answers = get_answers_for_question(question=question)
         serializer = AnswersListSerializer(instance=answers, many=True)
         return Response(serializer.data)
 
