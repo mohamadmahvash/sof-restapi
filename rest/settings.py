@@ -147,15 +147,13 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '3/day',
-        'user': '10/day',
+        'anon': '30/day',
+        'user': '100/day',
 
-        'login': '3/min',
         'register': '3/hour',
-        'profile': '10/min',
 
-        'forgot_password': '3/hour',
-        'reset_password': '5/hour',
+        'forgot_password_email': '3/hour',
+        'forgot_password_ip': '20/hour',
 
     },
     'DEFAULT_RENDERER_CLASSES': [

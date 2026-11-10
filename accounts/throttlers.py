@@ -1,18 +1,31 @@
 from rest_framework.throttling import SimpleRateThrottle
+from rest_framework.throttling import AnonRateThrottle
+
+import hashlib
+
 
 class RegisterThrottle(SimpleRateThrottle):
-
     scope = 'register'
 
     def get_cache_key(self, request, view):
         return self.get_ident(request)
 
-class ForgotPasswordThrottle(SimpleRateThrottle):
 
-    scope = 'forgot_password'
+class ForgotPasswordEmailThrottle(SimpleRateThrottle):
+    scope = "forgot_password_email"
 
     def get_cache_key(self, request, view):
-        email = request.user.email
-        identity =  self.get_ident(request)
+        email = request.data.get("email", "").strip().lower()
+        ident = hashlib.sha256(email.encode()).hexdigest()
 
-        return f"{email}:{identity}"
+        if not email:
+            return None
+
+        return self.cache_format % {
+            "scope": self.scope,
+            "ident": ident,
+        }
+
+
+class ForgotPasswordIPThrottle(AnonRateThrottle):
+    scope = "forgot_password_ip"

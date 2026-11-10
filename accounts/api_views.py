@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import UserSerializer, UserProfileSerializer, UserRegisterSerializer, ChangePasswordSerializer, \
     ForgotPasswordSerializer, UserLoginSerializer, UserLogOutSerializer
 from .selectors import get_user_by_id, get_user_by_email
-from .throttlers import ForgotPasswordThrottle, RegisterThrottle
+from .throttlers import ForgotPasswordEmailThrottle, ForgotPasswordIPThrottle, RegisterThrottle
 from .services import *
 
 
@@ -101,7 +101,7 @@ class UserActivationAccountView(APIView):
 
 
 class ForgotPasswordView(APIView):
-    throttle_classes = [ForgotPasswordThrottle]
+    throttle_classes = [ForgotPasswordEmailThrottle, ForgotPasswordIPThrottle]
 
     def post(self, request):
         serializer = ForgotPasswordSerializer(data=request.data)
