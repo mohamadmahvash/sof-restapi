@@ -22,32 +22,34 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = ['username']
 
 
-def clean_email(value):
-    if "admin" in value:
-        raise serializers.ValidationError("Email should not contain `admin`")
-
-
 class UserRegisterSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True, validators=[clean_email])
+    email = serializers.EmailField(required=True)
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
     password2 = serializers.CharField(required=True, write_only=True)
 
     # field-level validation
     def validate_username(self, value):
-        if value == 'admin':
+        value = value.strip()
+        if value.lower() == 'admin':
             raise serializers.ValidationError('username can not be `admin`')
+        user = User.objects.filter(username__iexact=value).exists()
+        if user:
+            raise serializers.ValidationError("username already exist")
         return value
 
     def validate_email(self, value):
-        user = User.objects.filter(email=value).exists()
+        value = value.strip()
+        if "admin" in value.lower():
+            raise serializers.ValidationError("Email should not contain `admin`")
+        user = User.objects.filter(email__iexact=value).exists()
         if user:
             raise serializers.ValidationError("Email already registered")
-        return value
+        return value.lower()
 
     # object-level validation
     def validate(self, data):
-        if data['password'] != data['password2']:
+        if data.get('password') != data.get('password2'):
             raise serializers.ValidationError('passwords must match')
         return data
 
